@@ -11,5 +11,10 @@ namespace Application.Responses
         {
             BankUser = bankUser;
         }
+        public UserResponse(BankUser? bankUser, bool success = true, string message = "") : base(success)
+        {
+            BankUser = bankUser;
+            Message = message;
+        }
     }
 }

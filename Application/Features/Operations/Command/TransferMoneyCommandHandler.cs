@@ -31,7 +31,7 @@ namespace Application.Features.Operations.Command
             {
                 return new BaseResponse(false, "You dont have enaught money.");
             }
-            if (!userTo.Result.Number.HasValidCheckDigit())
+            if (!request.To_UserId.HasValidCheckDigit())
             {
                 return new BaseResponse(false, "Luhna checksum invald.");
             }
