@@ -87,7 +87,8 @@ namespace App
             Console.WriteLine("4. Close account");
             Console.WriteLine("5. Log out ");
             Console.WriteLine("6. Change pin");
-            Console.WriteLine("7. Exit");
+            Console.WriteLine("7. Withdraw money");
+            Console.WriteLine("8. Exit");
         }
         public async void TakeBaseInput()
         {
@@ -141,6 +142,9 @@ namespace App
                     await ChangePin(currentUser);
                     break;
                 case 7:
+                    await WithdrawMoney(currentUser);
+                    break;
+                case 8:
                     Environment.Exit(0);
                     break;
                 default:
@@ -273,6 +277,26 @@ namespace App
             });
 
             Console.WriteLine($"Your pin is {result.Message}");
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
+            PrintLoggedUserMenu();
+            TakeLoggedInput();
+        }
+        async Task WithdrawMoney(BankUser bankUser)
+        {
+            Console.Clear();
+            Console.WriteLine("Withdrawing moneys");
+            Console.Write($"Amount: ");
+            double amount;
+            var goodInput = double.TryParse(Console.ReadLine(), out amount);
+            while (!goodInput)
+            {
+                Console.WriteLine("Inserted amount must be a numeric value. Try again");
+                goodInput = double.TryParse(Console.ReadLine(), out amount);
+            }
+
+            var result = await mediator.Send(new WithdrawMoneyCommand() { Amount = amount, UserId = bankUser.Number });
+            Console.WriteLine(result.Message);
             Console.WriteLine("Press enter to continue");
             Console.ReadLine();
             PrintLoggedUserMenu();

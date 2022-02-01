@@ -26,7 +26,7 @@ namespace Application.Features.Operations.Command
 
             await repository.UpdateAsync(user);
 
-            return new BaseResponse(true, $"Balance updated. Actual balance: {user.AccountBalance}");
+            return new BaseResponse(true, $"Money withdrawed. Actual balance: {user.AccountBalance}");
         }
     }
 }
