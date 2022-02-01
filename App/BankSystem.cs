@@ -130,7 +130,7 @@ namespace App
         }
         async Task CloseAccount(BankUser currentUser)
         {
-            Console.ReadLine();
+            Console.Clear();
             Console.WriteLine("Are You sure you want close your account?");
             Console.WriteLine("Write 'confirm' to confirm :)");
             var confirm = Console.ReadLine();
@@ -141,15 +141,25 @@ namespace App
                     UserId = currentUser.Number,
                 });
 
-                Console.WriteLine(result.Message);
+                Console.WriteLine($"Your account has been {result.Message}");
+                Console.Write("Please enter to continue");
+                Console.ReadLine();
+                this.currentUser = null;
+                PrintBaseMenu();
+                TakeBaseInput();
             }
-            PrintLoggedUserMenu();
-            TakeLoggedInput();
-
+            else
+            {
+                Console.WriteLine("Acount has been not deleted");
+                Console.WriteLine("Press enter to continue..");
+                Console.ReadLine();
+                PrintLoggedUserMenu();
+                TakeLoggedInput();
+            }
         }
         void LogOut()
         {
-            Console.ReadLine();
+            Console.Clear();
             Console.WriteLine("Loging out... Pres enter to continue");
             Console.ReadLine();
             currentUser = null;
