@@ -17,6 +17,12 @@ db.Database.EnsureCreated();
 var mediator = serviceProvider.GetRequiredService<IMediator>();
 
 var response = await mediator.Send(new Application.Features.Users.Commands.CreateUserCommand());
+response = await mediator.Send(new Application.Features.Users.Commands.DeleteUserCommand()
+{
+    UserId = "4000006521457282"
+});
+
+var x = response;
 
 
 
