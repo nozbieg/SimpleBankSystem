@@ -7,7 +7,7 @@ using MediatR;
 
 namespace App
 {
-    public class BankSystem
+    public class BankSystem : IBankSystem
     {
         BankUser? currentUser;
         readonly IMediator mediator;
@@ -86,7 +86,8 @@ namespace App
             Console.WriteLine("3. Do transfer");
             Console.WriteLine("4. Close account");
             Console.WriteLine("5. Log out ");
-            Console.WriteLine("6. Exit");
+            Console.WriteLine("6. Change pin");
+            Console.WriteLine("7. Exit");
         }
         public async void TakeBaseInput()
         {
@@ -137,6 +138,9 @@ namespace App
                     LogOut();
                     break;
                 case 6:
+                    await ChangePin(currentUser);
+                    break;
+                case 7:
                     Environment.Exit(0);
                     break;
                 default:
@@ -249,6 +253,30 @@ namespace App
             currentUser = null;
             PrintBaseMenu();
             TakeBaseInput();
+        }
+
+        async Task ChangePin(BankUser currentUser)
+        {
+            Console.Clear();
+            Console.WriteLine("You want change your PIN. Input new pin");
+            var pin = Console.ReadLine();
+            while (pin == null)
+            {
+                Console.WriteLine("Pin cant be empty. Try again");
+                pin = Console.ReadLine();
+            }
+            currentUser.Pin = pin;
+            var result = await mediator.Send(new UpdateUserCommand()
+            {
+                UserId = currentUser.Number,
+                Pin = pin
+            });
+
+            Console.WriteLine($"Your pin is {result.Message}");
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
+            PrintLoggedUserMenu();
+            TakeLoggedInput();
         }
         async Task CreateNewUser()
         {

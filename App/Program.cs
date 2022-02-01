@@ -2,7 +2,6 @@
 using App;
 using Application;
 using Infrastructure;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Persistance;
 
@@ -10,14 +9,14 @@ var serviceProvider = new ServiceCollection()
     .AddApplicationServices()
     .AddInfrastructureServices()
     .AddPersistanceServices()
+    .AddSingleton<IBankSystem, BankSystem>()
     .BuildServiceProvider();
 
 var db = serviceProvider.GetRequiredService<BankDbContext>();
 db.Database.EnsureCreated();
 
-var mediator = serviceProvider.GetRequiredService<IMediator>();
+var bankSystem = serviceProvider.GetRequiredService<IBankSystem>();
 
-var bankSystem = new BankSystem(mediator);
 bankSystem.PrintWelocmeScreen();
 bankSystem.PrintBaseMenu();
 bankSystem.TakeBaseInput();
