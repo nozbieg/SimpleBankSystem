@@ -28,7 +28,6 @@ namespace App
             Console.WriteLine("                               /____/                                            ");
             Console.ForegroundColor = ConsoleColor.White;
         }
-
         public void PrintBaseMenu()
         {
             Console.WriteLine();
@@ -36,6 +35,58 @@ namespace App
             Console.WriteLine("1. Create account");
             Console.WriteLine("2. Login in to account ");
             Console.WriteLine("3. Exit ");
+        }
+        async void PrintLoginSection()
+        {
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine("Please enter your creditentials:");
+            Console.Write("Account number: ");
+            var accountNumber = Console.ReadLine();
+            while (accountNumber == null)
+            {
+                Console.WriteLine("Account number cant be empty. Try again");
+                accountNumber = Console.ReadLine();
+            }
+            Console.Write("Pin: ");
+            var pin = Console.ReadLine();
+            while (pin == null)
+            {
+                Console.WriteLine("Pin cant be empty. Try again");
+                pin = Console.ReadLine();
+            }
+
+            var response = await mediator.Send(new LogInCommand()
+            {
+                UserId = accountNumber,
+                Pin = pin
+            });
+
+            if (response.Success)
+            {
+                currentUser = response.BankUser;
+                PrintLoggedUserMenu();
+                TakeLoggedInput();
+            }
+            else
+            {
+                Console.WriteLine("Incorrect creditentials. Returning to menu. Press enter.");
+                Console.ReadKey();
+                PrintBaseMenu();
+                TakeBaseInput();
+            }
+
+        }
+        void PrintLoggedUserMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("Welcome in your account. Chosee an option");
+            Console.WriteLine("1. Balance");
+            Console.WriteLine("2. Add income");
+            Console.WriteLine("3. Do transfer");
+            Console.WriteLine("4. Close account");
+            Console.WriteLine("5. Log out ");
+            Console.WriteLine("6. Exit");
         }
         public async void TakeBaseInput()
         {
@@ -60,7 +111,40 @@ namespace App
                     break;
             }
         }
+        public async void TakeLoggedInput()
+        {
+            if (currentUser == null)
+            {
+                throw new Exception("UserError, Not logged correctly");
+            }
 
+            var input = WaitForInput();
+            switch (input)
+            {
+                case 1:
+                    CheckBalance(currentUser);
+                    break;
+                case 2:
+                    await AddIncome(currentUser);
+                    break;
+                case 3:
+                    await DoTransfer(currentUser);
+                    break;
+                case 4:
+                    await CloseAccount(currentUser);
+                    break;
+                case 5:
+                    LogOut();
+                    break;
+                case 6:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    PrintLoggedUserMenu();
+                    TakeLoggedInput();
+                    break;
+            }
+        }
         void CheckBalance(BankUser currentUser)
         {
             Console.Clear();
@@ -95,7 +179,7 @@ namespace App
             PrintLoggedUserMenu();
             TakeLoggedInput();
         }
-        async Task DoTransfer(BankUser curentUser)
+        async Task DoTransfer(BankUser currentUser)
         {
             Console.Clear();
             Console.WriteLine("Please insert amount you want transfer to other account.");
@@ -166,95 +250,6 @@ namespace App
             PrintBaseMenu();
             TakeBaseInput();
         }
-        public async void TakeLoggedInput()
-        {
-            if (currentUser == null)
-            {
-                throw new Exception("UserError, Not logged correctly");
-            }
-
-            var input = WaitForInput();
-            switch (input)
-            {
-                case 1:
-                    CheckBalance(currentUser);
-                    break;
-                case 2:
-                    await AddIncome(currentUser);
-                    break;
-                case 3:
-                    await DoTransfer(currentUser);
-                    break;
-                case 4:
-                    await CloseAccount(currentUser);
-                    break;
-                case 5:
-                    LogOut();
-                    break;
-                case 6:
-                    Environment.Exit(0);
-                    break;
-                default:
-                    PrintLoggedUserMenu();
-                    TakeLoggedInput();
-                    break;
-            }
-        }
-
-        void PrintLoggedUserMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("Welcome in your account. Chosee an option");
-            Console.WriteLine("1. Balance");
-            Console.WriteLine("2. Add income");
-            Console.WriteLine("3. Do transfer");
-            Console.WriteLine("4. Close account");
-            Console.WriteLine("5. Log out ");
-            Console.WriteLine("6. Exit");
-
-        }
-        async void PrintLoginSection()
-        {
-            Console.Clear();
-            Console.WriteLine();
-            Console.WriteLine("Please enter your creditentials:");
-            Console.Write("Account number: ");
-            var accountNumber = Console.ReadLine();
-            while (accountNumber == null)
-            {
-                Console.WriteLine("Account number cant be empty. Try again");
-                accountNumber = Console.ReadLine();
-            }
-            Console.Write("Pin: ");
-            var pin = Console.ReadLine();
-            while (pin == null)
-            {
-                Console.WriteLine("Pin cant be empty. Try again");
-                pin = Console.ReadLine();
-            }
-
-            var response = await mediator.Send(new LogInCommand()
-            {
-                UserId = accountNumber,
-                Pin = pin
-            });
-
-            if (response.Success)
-            {
-                currentUser = response.BankUser;
-                PrintLoggedUserMenu();
-                TakeLoggedInput();
-            }
-            else
-            {
-                Console.WriteLine("Incorrect creditentials. Returning to menu. Press enter.");
-                Console.ReadKey();
-                PrintBaseMenu();
-                TakeBaseInput();
-            }
-
-        }
-
         async Task CreateNewUser()
         {
             Console.Clear();
@@ -264,7 +259,6 @@ namespace App
             Console.WriteLine("Press enter to return to menu.");
             Console.ReadLine();
         }
-
         int WaitForInput()
         {
             int parameter;
