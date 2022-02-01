@@ -6,13 +6,13 @@ namespace Domain;
 public class BankUser
 {
     public string Number { get; set; }
-    public int Pin { get; set; }
-    public Account Account { get; set; }
+    public string Pin { get; set; }
+    public double AccountBalance { get; set; }
 
-    public BankUser(string number, int pin)
+    public BankUser(string number, string pin)
     {
         Number = number;
         Pin = pin;
-        Account = new();
+        AccountBalance = 0;
     }
 }

@@ -16,7 +16,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, BaseR
     public async Task<BaseResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var generatedAccountNumber = generatorService.GenerateCardNumber();
-        var randomPin = int.Parse(new Random().Next(0, 9999).ToString("D4"));
+        var randomPin = new Random().Next(0, 9999).ToString("D4");
         var newUser = new BankUser(generatedAccountNumber, randomPin);
         await repository.CreateAsync(newUser);
 

@@ -1,29 +1,41 @@
 ﻿using System;
 using System.Linq;
 using Application.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistance.Repositories
 {
-    public class AsyncRepository<T> : IAsyncRepository<T>
+    public class AsyncRepository<T> : IAsyncRepository<T> where T : class
     {
-        public Task<T> CreateAsync(T entity)
+        readonly BankDbContext dbContext;
+        public AsyncRepository(BankDbContext dbContext)
         {
-            throw new NotImplementedException();
+            this.dbContext = dbContext;
+        }
+        public async Task<T> CreateAsync(T entity)
+        {
+            await dbContext.Set<T>().AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<T> DeleteAsync(string id)
+        public async Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+
+            dbContext.Set<T>().Remove(entity);
+            await dbContext.SaveChangesAsync();
         }
 
-        public Task<T> GetAsync(string id)
+        public async Task<T> GetAsync(string id)
         {
-            throw new NotImplementedException();
+            return await dbContext.Set<T>().FindAsync(id);
+
         }
 
-        public Task<T> UpdateAsync(string id)
+        public async Task UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            dbContext.Entry(entity).State = EntityState.Modified;
+            await dbContext.SaveChangesAsync();
         }
     }
 }

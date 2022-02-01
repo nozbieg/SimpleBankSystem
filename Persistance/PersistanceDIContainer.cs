@@ -13,6 +13,7 @@ public static class PersistanceDIContainer
     {
         //Rejestracja usług
         services.AddScoped(typeof(IAsyncRepository<>), typeof(AsyncRepository<>));
+        services.AddEntityFrameworkSqlite().AddDbContext<BankDbContext>();
 
 
         return services;

@@ -9,7 +9,7 @@ namespace Infrastructure.Services
         public string GenerateCardNumber()
         {
 
-            string generateAccId = $"400000{new Random().Next(0, 999999999).ToString("D9")}";
+            string generateAccId = $"400000{new Random().Next(0, 999999999):D9}";
 
             var generatedIdWithChecksum = generateAccId.AppendCheckDigit();
 

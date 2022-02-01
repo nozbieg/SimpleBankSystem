@@ -12,7 +12,8 @@ var serviceProvider = new ServiceCollection()
     .AddInfrastructureServices()
     .AddPersistanceServices()
     .BuildServiceProvider();
-
+var db = serviceProvider.GetRequiredService<BankDbContext>();
+db.Database.EnsureCreated();
 var mediator = serviceProvider.GetRequiredService<IMediator>();
 
 var response = await mediator.Send(new Application.Features.Users.Commands.CreateUserCommand());
